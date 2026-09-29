@@ -1,0 +1,19 @@
+# Dokumen hasil & bukti — JANGAN pernah di-commit.
+# Isinya memuat kredensialnyata sebelum redaksi.
+*.docx
+*.pdf
+*.md
+!README.md
+
+# Screenshot bukti
+bukti-pentest/
+
+# Backup
+.backup-*/
+
+# Rahasia
+.env
+*.pem
+*.key
+__pycache__/
+*.pyc
