@@ -1,9 +1,12 @@
-# Dokumen hasil & bukti — JANGAN pernah di-commit.
-# Isinya memuat kredensialnyata sebelum redaksi.
+# Dokumen biner hasil build — JANGAN di-commit (ukuran besar, ada salinan di luar repo).
 *.docx
 *.pdf
-*.md
-!README.md
+
+# Laporan markdown yang ADA di dalam folder ini ikut ter-commit.
+# File .md di luar folder ini (laporan.md, vuln.md di root /root/crack)
+# tidak terpengaruh — .gitignore ini hanya berlaku untuk repo ini.
+# Kalau nanti laporan.md dipindahkan ke sini, whitelist eksplisit:
+# !laporan.md
 
 # Screenshot bukti
 bukti-pentest/
