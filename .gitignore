@@ -8,8 +8,9 @@
 # Kalau nanti laporan.md dipindahkan ke sini, whitelist eksplisit:
 # !laporan.md
 
-# Screenshot bukti
-bukti-pentest/
+# Screenshot bukti — ikut di-commit sebagai lampiran laporan.
+# Isinya output terminal mentah, memuat kredensial plaintext.
+# Kalau butuh repo tanpa kredensial, hapus baris ini lalu git rm -r --cached bukti-pentest/
 
 # Backup
 .backup-*/

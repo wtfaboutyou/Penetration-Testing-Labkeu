@@ -21,7 +21,7 @@ dijalankan.
 | | Laporan lama (2026-09-27) | Laporan ini (versi 1.1) |
 |---|---|---|
 | IP target | 192.168.1.18 | **192.168.1.18** (sama — dikonfirmasi hidup, bukan DHCP) |
-| Identitas | MAC `08:00:27:81:9D:8D` | MAC **sama**, dikonfirmasi ulang di `scan nmap.png` |
+| Identitas | MAC `08:00:27:81:9D:8D` | MAC **sama**, dikonfirmasi ulang di `scan-nmap.png` |
 | Waktu uji | 2026-09-27 | **2026-09-29, 00:08–00:47 WIB** (sesuai stempel waktu bukti) |
 | Sumber akses | sudah pegang `root:Labkeu123` | **black-box, kredensial SSH ditebak & dipatahkan** |
 | Cara dapat secret session | baca `server.js` via SSH | **ditebak & dipecah tanpa akses sama sekali** |
@@ -117,7 +117,7 @@ yang sama pada engagement sebelumnya.
 nmap -Pn -sV -p 22,3000,3307 192.168.1.18
 ```
 
-> **Catatan:** perintah yang benar-benar direkam (`scan nmap.png`) **tidak memakai
+> **Catatan:** perintah yang benar-benar direkam (`scan-nmap.png`) **tidak memakai
 > `-sC`**. Karena itu nomor versi Node.js dan Express **tidak dapat disimpulkan dari
 > bukti ini**. Nilai v20.20.2 / ^4.19.2 berasal dari pembacaan `package.json`
 > setelah akses root diperoleh. Jalankan ulang dengan `-sC` bila ingin bukti langsung.
@@ -1354,7 +1354,7 @@ apt update && apt install -y nmap curl sshpass mysql-client netcat-openbsd tcpdu
 # 1 - KONFIRMASI HOST HIDUP                                        [ping.png]
 ping -c 4 192.168.1.18                        # -> 4/4 diterima, 0% packet loss
 
-# 2 - SCAN PORT & VERSI                                      [scan nmap.png]
+# 2 - SCAN PORT & VERSI                                      [scan-nmap.png]
 nmap -Pn -sV -p 22,3000,3307 192.168.1.18     # -> 22, 3000, 3307 terbuka
 # CATATAN: bukti aslinya tanpa -sC, jadi versi Node/Express tidak terambil
 

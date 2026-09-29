@@ -10,6 +10,7 @@ Lab pribadi (VM VirtualBox), data fiktif, pengujian dilakukan atas target milik 
 | [`laporan.md`](laporan.md) | **Laporan utama.** 10 bagian + lampiran: ringkasan eksekutif, profil target, 15 temuan, temuan negatif, rekomendasi, catatan otorisasi. |
 | [`vuln-temuan.md`](vuln-temuan.md) | Narasi lengkap per langkah. Alur mulai dari nol — recon, foothold, SQLi, brute force, dump, eskalasi. |
 | `report/` | Kode Python pembentuk versi DOCX dari laporan ini. |
+| `bukti-pentest/` | 12 screenshot bukti asli (908 KB), sesuai penamaan `[n.png]` di kedua laporan. |
 | `annotate_md.py` | Menyuntik blok status bukti ke `laporan.md` (idempoten). |
 
 Kedua dokumen berasal dari satu pengujian yang sama (2026-09-29, 00:08-00:47 WIB,

@@ -53,14 +53,14 @@ Ketiga masalah di atas saling menguatkan. Memperbaiki satu saja **tidak** cukup 
 
 | Item | Nilai | Sumber |
 |---|---|---|
-| IP | 192.168.1.18 | `ping.png`, `scan nmap.png` |
+| IP | 192.168.1.18 | `ping.png`, `scan-nmap.png` |
 | Status | Hidup, 0% packet loss, rtt rata-rata 3,97 ms | `ping.png` |
-| MAC | `08:00:27:81:9D:8D` | `scan nmap.png` |
+| MAC | `08:00:27:81:9D:8D` | `scan-nmap.png` |
 | OS host | Alpine Linux 3.24.2, kernel 6.18.52-0-lts | `11.png` |
-| Aplikasi | Node.js Express framework (port 3000) | `scan nmap.png` |
-| Basis data | MySQL 8.0.46, skema `labkeu`, **4 tabel** | `scan nmap.png`, `9.png` |
-| Port terbuka | 22 (OpenSSH 10.3), 3000 (HTTP), 3307 (MySQL) | `scan nmap.png` |
-| TLS/HTTPS | **Tidak ada sama sekali** | `scan nmap.png` |
+| Aplikasi | Node.js Express framework (port 3000) | `scan-nmap.png` |
+| Basis data | MySQL 8.0.46, skema `labkeu`, **4 tabel** | `scan-nmap.png`, `9.png` |
+| Port terbuka | 22 (OpenSSH 10.3), 3000 (HTTP), 3307 (MySQL) | `scan-nmap.png` |
+| TLS/HTTPS | **Tidak ada sama sekali** | `scan-nmap.png` |
 
 Nomor versi Node.js (20.20.2) dan Express (4.19.2) berasal dari pembacaan source dan `package.json` **setelah** akses root diperoleh — bukan dari `nmap`. Perintah `nmap` yang direkam tidak memakai `-sC`, sehingga versi tidak dapat disimpulkan dari bukti.
 
@@ -139,7 +139,7 @@ Kolom berikut memetakan setiap temuan ke screenshot yang benar-benar direkam. In
 | F-06 | Tidak ada rate limiting | **Belum diverifikasi** | — | Tidak ada screenshot. Klaim 946 akun tidak terbukti. |
 | F-07 | Session management lemah | **Belum diverifikasi** | — | Tidak ada screenshot. |
 | F-08 | Password plaintext | **Terbukti** | `9.png` | Kolom `password` berisi `password123` polos untuk semua baris. |
-| F-09 | Kredensial tanpa enkripsi | **Sebagian** | `scan nmap.png` | Hanya 3 port, tanpa listener TLS. Bukti tcpdump tidak direkam. |
+| F-09 | Kredensial tanpa enkripsi | **Sebagian** | `scan-nmap.png` | Hanya 3 port, tanpa listener TLS. Bukti tcpdump tidak direkam. |
 | F-10 | Tidak ada proteksi CSRF | **Tidak langsung** | `9.png` | Hanya artefak akun `zzz_csrf_31965`. |
 | F-11 | Reflected XSS `/search` | **Belum diverifikasi** | — | Tidak ada screenshot. |
 | F-12 | `/etc/passwd` publik | **Belum diverifikasi** | — | Tidak ada screenshot. |
@@ -154,7 +154,7 @@ Kolom berikut memetakan setiap temuan ke screenshot yang benar-benar direkam. In
 | Berkas | Waktu | Isi |
 |---|---|---|
 | `ping.png` | 00:08 | Host hidup, 0% packet loss, rtt rata-rata 3,97 ms |
-| `scan nmap.png` | 00:10 | 22 OpenSSH 10.3 · 3000 Node.js Express · 3307 MySQL 8.0.46 · MAC `08:00:27:81:9D:8D` |
+| `scan-nmap.png` | 00:10 | 22 OpenSSH 10.3 · 3000 Node.js Express · 3307 MySQL 8.0.46 · MAC `08:00:27:81:9D:8D` |
 | `2.png` | 00:44 | Perintah grep kredensial — **tanpa output** |
 | `3.png` | 00:44 | Login `individu1` → `HTTP=302 -> /dashboard` |
 | `4.png` | 00:44 | IDOR: 2 baris JSON `perusahaan_id:2` |
@@ -614,9 +614,9 @@ id  username    password
 
 ### F-09 · Kredensial dikirim tanpa enkripsi — 8.1 High
 
-> **Status bukti: SEBAGIAN** — `scan nmap.png`
+> **Status bukti: SEBAGIAN** — `scan-nmap.png`
 >
-> `scan nmap.png` membuktikan hanya 3 port terbuka tanpa listener TLS. Bukti kredensial terbaca di kabel (tcpdump) tidak direkam.
+> `scan-nmap.png` membuktikan hanya 3 port terbuka tanpa listener TLS. Bukti kredensial terbaca di kabel (tcpdump) tidak direkam.
 
 **Apa.** Aplikasi hanya tersedia lewat HTTP tanpa TLS. Tidak ada HTTPS, tidak ada HSTS, tidak ada proxy. Password dan cookie sesi melintas dalam bentuk teks terbuka.
 
@@ -949,7 +949,7 @@ ping -c 4 192.168.1.18
 #   -> 4 packets transmitted, 4 received, 0% packet loss
 #   -> rtt min/avg/max/mdev = 1.115/3.966/10.472/3.781 ms
 
-# 2. Port & versi                                                 [scan nmap.png]
+# 2. Port & versi                                                 [scan-nmap.png]
 nmap -Pn -sV -p 22,3000,3307 192.168.1.18
 #   -> 22/tcp   open  ssh     OpenSSH 10.3 (protocol 2.0)
 #   -> 3000/tcp open  http    Node.js Express framework
